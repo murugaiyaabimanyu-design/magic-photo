@@ -8,25 +8,22 @@
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
 <style>
-html, body {
+body, html {
   margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
-
 #startButton {
-  position: fixed;
-  z-index: 9999;
+  display: flex;
   width: 100%;
   height: 100%;
-  background: black;
-  color: white;
-  display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 22px;
-  text-align: center;
+  background: black;
+  color: white;
+  font-size: 24px;
 }
 </style>
 </head>
@@ -36,9 +33,11 @@ html, body {
 <div id="startButton">Tap to Start Kodaikanal Magic</div>
 
 <a-scene
+  id="arScene"
   mindar-image="imageTargetSrc: targets.mind;"
   vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: true">
+  device-orientation-permission-ui="enabled: true"
+  visible="false">
 
   <a-assets>
     <video
@@ -55,25 +54,34 @@ html, body {
   <a-entity id="marker" mindar-image-target="targetIndex: 0">
     <a-video
       src="#video"
+      position="0 0 0"
       width="1"
-      height="0.56"
-      position="0 0 0">
+      height="0.56">
     </a-video>
   </a-entity>
 
 </a-scene>
 
 <script>
-const startBtn = document.getElementById("startButton");
+const startButton = document.getElementById("startButton");
+const arScene = document.getElementById("arScene");
 const video = document.getElementById("video");
 const marker = document.getElementById("marker");
 
-startBtn.addEventListener("click", async () => {
-  startBtn.style.display = "none";
-  video.muted = false;
+startButton.addEventListener("click", async () => {
+  // hide start UI
+  startButton.style.display = "none";
+
+  // show AR scene
+  arScene.setAttribute("visible", "true");
+
+  // allow audio/video playback
   await video.play();
   video.pause();
   video.currentTime = 0;
+
+  // start camera
+  document.querySelector("a-scene").enterVR();
 });
 
 marker.addEventListener("targetFound", () => {
