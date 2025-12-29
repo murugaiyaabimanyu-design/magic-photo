@@ -8,36 +8,40 @@
 <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
 <style>
-body, html {
+html, body {
   margin: 0;
-  padding: 0;
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
-#startButton {
-  display: flex;
+
+#startOverlay {
+  position: fixed;
+  z-index: 9999;
   width: 100%;
   height: 100%;
-  justify-content: center;
-  align-items: center;
   background: black;
   color: white;
-  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  text-align: center;
 }
 </style>
 </head>
 
 <body>
 
-<div id="startButton">Tap to Start Kodaikanal Magic</div>
+<!-- START OVERLAY -->
+<div id="startOverlay">Tap to see Kodaikanal video</div>
 
 <a-scene
-  id="arScene"
   mindar-image="imageTargetSrc: targets.mind;"
   vr-mode-ui="enabled: false"
   device-orientation-permission-ui="enabled: true"
-  visible="false">
+  renderer="colorManagement: true;"
+>
 
   <a-assets>
     <video
@@ -54,40 +58,36 @@ body, html {
   <a-entity id="marker" mindar-image-target="targetIndex: 0">
     <a-video
       src="#video"
-      position="0 0 0"
       width="1"
-      height="0.56">
+      height="0.56"
+      position="0 0 0">
     </a-video>
   </a-entity>
 
 </a-scene>
 
 <script>
-const startButton = document.getElementById("startButton");
-const arScene = document.getElementById("arScene");
+const overlay = document.getElementById("startOverlay");
 const video = document.getElementById("video");
 const marker = document.getElementById("marker");
 
-startButton.addEventListener("click", async () => {
-  // hide start UI
-  startButton.style.display = "none";
+// ONE TAP ONLY – enables audio
+overlay.addEventListener("click", async () => {
+  overlay.style.display = "none";
 
-  // show AR scene
-  arScene.setAttribute("visible", "true");
-
-  // allow audio/video playback
+  // unlock audio
+  video.muted = false;
   await video.play();
   video.pause();
   video.currentTime = 0;
-
-  // start camera
-  document.querySelector("a-scene").enterVR();
 });
 
+// play video when image found
 marker.addEventListener("targetFound", () => {
   video.play();
 });
 
+// stop when image lost
 marker.addEventListener("targetLost", () => {
   video.pause();
   video.currentTime = 0;
