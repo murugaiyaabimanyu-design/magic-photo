@@ -25,16 +25,17 @@
       <video
         id="video"
         src="kodaikanal_video.mp4"
-        autoplay
         loop
         muted
-        playsinline>
+        playsinline
+        webkit-playsinline
+        preload="auto">
       </video>
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-entity mindar-image-target="targetIndex: 0">
+    <a-entity id="marker" mindar-image-target="targetIndex: 0">
       <a-video
         src="#video"
         width="1"
@@ -44,5 +45,13 @@
     </a-entity>
 
   </a-scene>
-</body>
-</html>
+
+  <script>
+    const video = document.querySelector("#video");
+    const marker = document.querySelector("#marker");
+
+    marker.addEventListener("targetFound", () => {
+      video.play();
+    });
+
+    marker.addEventListener("targetLost", () => {
