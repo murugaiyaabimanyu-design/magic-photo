@@ -14,40 +14,23 @@ html, body {
   height: 100%;
   overflow: hidden;
 }
-
-#startOverlay {
-  position: fixed;
-  z-index: 9999;
-  width: 100%;
-  height: 100%;
-  background: black;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  text-align: center;
-}
 </style>
 </head>
 
 <body>
 
-<!-- START OVERLAY -->
-<div id="startOverlay">Tap to see Kodaikanal video</div>
-
 <a-scene
   mindar-image="imageTargetSrc: targets.mind;"
   vr-mode-ui="enabled: false"
   device-orientation-permission-ui="enabled: true"
-  renderer="colorManagement: true;"
->
+  renderer="colorManagement: true;">
 
   <a-assets>
     <video
       id="video"
       src="kodaikanal_video.mp4"
       preload="auto"
+      muted
       playsinline
       webkit-playsinline>
     </video>
@@ -67,30 +50,25 @@ html, body {
 </a-scene>
 
 <script>
-const overlay = document.getElementById("startOverlay");
 const video = document.getElementById("video");
 const marker = document.getElementById("marker");
 
-// ONE TAP ONLY – enables audio
-overlay.addEventListener("click", async () => {
-  overlay.style.display = "none";
-
-  // unlock audio
-  video.muted = false;
-  await video.play();
-  video.pause();
-  video.currentTime = 0;
-});
-
-// play video when image found
+// Play muted video when image is found
 marker.addEventListener("targetFound", () => {
   video.play();
 });
 
-// stop when image lost
+// Stop video when image is lost
 marker.addEventListener("targetLost", () => {
   video.pause();
   video.currentTime = 0;
+});
+
+// One tap anywhere enables audio
+document.body.addEventListener("click", () => {
+  if (video.muted) {
+    video.muted = false;
+  }
 });
 </script>
 
