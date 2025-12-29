@@ -44,7 +44,7 @@ html, body {
       width="1"
       height="0.56"
       position="0 0 0"
-     rotation="0 0 180">
+     rotation="0 0 270">
     </a-video>
   </a-entity>
 
@@ -65,12 +65,7 @@ marker.addEventListener("targetLost", () => {
   video.currentTime = 0;
 });
 
-// One tap anywhere enables audio
-document.body.addEventListener("click", () => {
-  if (video.muted) {
-    video.muted = false;
-  }
-});
+
 </script>
 
 </body>
