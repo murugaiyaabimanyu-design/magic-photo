@@ -1,57 +1,90 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Kodaikanal Magic Photo</title>
+<meta charset="utf-8">
+<title>Kodaikanal Magic Photo</title>
 
-  <!-- A-Frame -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+<script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
-  <!-- MindAR -->
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
-  <style>
-    body { margin: 0; overflow: hidden; }
-  </style>
+#startButton {
+  position: fixed;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  text-align: center;
+}
+</style>
 </head>
 
 <body>
-  <a-scene
-    mindar-image="imageTargetSrc: targets.mind;"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: true">
 
-    <a-assets>
-      <video
-        id="video"
-        src="kodaikanal_video.mp4"
-        loop
-        muted
-        playsinline
-        webkit-playsinline
-        preload="auto">
-      </video>
-    </a-assets>
+<div id="startButton">Tap to Start Kodaikanal Magic</div>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+<a-scene
+  mindar-image="imageTargetSrc: targets.mind;"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: true">
 
-    <a-entity id="marker" mindar-image-target="targetIndex: 0">
-      <a-video
-        src="#video"
-        width="1"
-        height="0.56"
-        position="0 0 0">
-      </a-video>
-    </a-entity>
+  <a-assets>
+    <video
+      id="video"
+      src="kodaikanal_video.mp4"
+      preload="auto"
+      playsinline
+      webkit-playsinline>
+    </video>
+  </a-assets>
 
-  </a-scene>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <script>
-    const video = document.querySelector("#video");
-    const marker = document.querySelector("#marker");
+  <a-entity id="marker" mindar-image-target="targetIndex: 0">
+    <a-video
+      src="#video"
+      width="1"
+      height="0.56"
+      position="0 0 0">
+    </a-video>
+  </a-entity>
 
-    marker.addEventListener("targetFound", () => {
-      video.play();
-    });
+</a-scene>
 
-    marker.addEventListener("targetLost", () => {
+<script>
+const startBtn = document.getElementById("startButton");
+const video = document.getElementById("video");
+const marker = document.getElementById("marker");
+
+startBtn.addEventListener("click", async () => {
+  startBtn.style.display = "none";
+  video.muted = false;
+  await video.play();
+  video.pause();
+  video.currentTime = 0;
+});
+
+marker.addEventListener("targetFound", () => {
+  video.play();
+});
+
+marker.addEventListener("targetLost", () => {
+  video.pause();
+  video.currentTime = 0;
+});
+</script>
+
+</body>
+</html>
